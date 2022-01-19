@@ -1,0 +1,17 @@
+body{
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.content{
+    flex: 1;
+}
+
+.footer-dark{
+    background-color: #414141;
+}
+
+textarea{
+    width: 100%;
+}

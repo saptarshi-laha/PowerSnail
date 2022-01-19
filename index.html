@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>PowerSnail - Powerless Shell</title>
+    <meta http-equiv="encoding" content="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="refresh" content="300">
+    <meta name="twitter:description" content="Powershell Deobfuscator which can be used to convert powershell scripts with long, unmeaningful variable and function names to their reader friendly-version. Also supports shortened powershell extensions. ">
+    <meta name="twitter:image" content="assets/img/powersnail.png">
+    <meta property="og:image" content="assets/img/powersnail.png">
+    <meta name="description" content="Powershell Deobfuscator which can be used to convert powershell scripts with long, unmeaningful variable and function names to their reader friendly-version. Also supports shortened powershell extensions. ">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PowerSnail - Powerless Shell">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/img/powersnail.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/img/powersnail.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/img/powersnail.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/img/powersnail.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/img/powersnail.png">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <div class="content">
+        <div class="container text-center" style="text-align: center;height: auto;"><img src="assets/img/powersnail.png" style="width: 256px;" alt="PowerSnail Logo"></div>
+        <div class="container" style="text-align: center;margin-bottom: 50px;">
+            <h3 class="text-center" style="color: #cd6122;font-family: 'Allerta Stencil', sans-serif;text-align: center;height: auto;margin-bottom: 0px;">PowerSnail - PowerLess Shell</h3>
+        </div>
+        <div class="container text-center" style="text-align: center;height: auto;"><small class="form-text">Enter the obfuscated powershell script below.</small></div>
+        <div class="container text-center" style="margin-bottom: 20px;"><textarea id="inputbox" rows="5" ></textarea></div>
+        <div class="container text-center" style="margin-bottom: 20px;"><button class="btn btn-primary" type="button" onclick="powerSnail()" style="margin-bottom: 0px;">PowerSnail</button></div>
+        <div class="container text-center" style="text-align: center;height: auto;"><small class="form-text">You'll find the unobfuscated powershell script below.</small></div>
+        <div class="container text-center" style="margin-bottom: 100px;"><textarea id="outputbox" rows="5" readonly=""></textarea></div>
+    </div>
+    <footer class="footer-dark">
+        <div class="container text-center">
+            <h5 style="margin-top:20px; color:#ffffff">Developed by Saptarshi Laha for eSentire.</h5>
+        </div>
+        <div class="container text-center" style="height: auto;width: auto;">
+            <h6 style="color: rgb(113,128,137); margin-bottom: 20px">Reach out to @Saptarshi Laha on Slack for bugs/issues/features, etc.</h6>
+        </div>
+    </footer>
+</body>
+
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/scripts/powersnail.js"></script>
+
+</html>
