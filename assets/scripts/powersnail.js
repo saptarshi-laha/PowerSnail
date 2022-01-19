@@ -21,7 +21,7 @@ function powerSnail(){
         inputData = inputData + "\n";
 
         //Removal of Comments
-        re = new RegExp(/<#[\s\S]*#>/g);
+        re = new RegExp(/<#[\s\S]*?#>/g);
         inputData = inputData.replaceAll(re, "");
         re = new RegExp(/#.*/g);
         inputData = inputData.replaceAll(re, "");
@@ -124,10 +124,15 @@ function powerSnail(){
                         var scope = "";
                         if(temp[0] >= 400){
                             temp[0] = temp[0] - 400;
+                            if(temp[0] > 0){
                             scope = LC_scopeVars[temp[0]];
                             scope = scope.replace("$", "");
                             re = new RegExp("(?<![\\w\\d])"+scope+temp[1]+"(?![\\w\\d])", "gi");
                             inputData = inputData.replaceAll(re, ""+scope+"var"+variables.indexOf(variables[x]));
+                            }
+                            else{
+                                //Retaining $env variable parameters
+                            }
                         }
                         else{
                             scope = scopes[temp[0]];
@@ -229,6 +234,7 @@ function powerSnail(){
         inputData = inputData.filter(n => n);
         var outputData = "";
 
+        //Line Break on ; character
         for(x in inputData){
             var indexes = [];
             re = new RegExp(/(?:\\(?:\\\\)*.|(["'])(?:\\(?:\\\\)*.|.)*?\1|[^;])+|;/gm);
