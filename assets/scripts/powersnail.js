@@ -230,9 +230,27 @@ function powerSnail(){
         var outputData = "";
 
         for(x in inputData){
-            re = new RegExp(";", "gi");
-            inputData[x] = inputData[x].replaceAll(re, ";\n");
+            var indexes = [];
+            re = new RegExp(/(?:\\(?:\\\\)*.|(["'])(?:\\(?:\\\\)*.|.)*?\1|[^;])+|;/gm);
+            while ((match = re.exec(inputData[x])) != null) {
+                if(match[0].length == 1){
+                    indexes.push(match.index);
+                }
+            }
+            for(y in indexes){
+                inputData[x] = inputData[x].slice(0,indexes[y]+1) + "\n" + inputData[x].slice(indexes[y]+1);
+                for(z in indexes){
+                    indexes[z] = indexes[z] + 1;
+                }
+            }
+
+
+            re = new RegExp(/\n[\s]*/gm)
+            inputData[x] = inputData[x].replaceAll(re, "\n");
+
         }
+
+
 
         for(x in inputData){
             outputData = outputData + inputData[x] + "\n";
