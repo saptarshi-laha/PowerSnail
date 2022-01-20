@@ -259,7 +259,7 @@ function powerSnail(){
         //Line Break on ; character
         for(x in inputData){
             indexes = [];
-            re = new RegExp(/(?:(["'])(?:.)*?\1|[^;])+|;/gm);
+            re = new RegExp(/(?:(["'])(?:\\.|.)*?\1|[^;])+|;/gm);
             while ((match = re.exec(inputData[x])) != null) {
                 if(match[0].length == 1){
                     indexes.push(match.index);

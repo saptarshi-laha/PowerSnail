@@ -8,6 +8,5 @@ Working on the following now -
 7. Remove of escapes (When not in quotes)
 8. Fix issue with nested multiline comment bug
 9. Fix nested variable with {}
-10. Fix issue with fails in ;
 
 Use Bracket Balancer for nests.
