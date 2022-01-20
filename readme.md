@@ -1,8 +1,13 @@
 Working on the following now -
-1. Single line comments
-2. {} Beautification
-3. Replacing variables inside strings (testing)
-4. Replacing functions inside strings safely (testing)
-5. Base64encode/decode
-6. RawInflate/Deflate
-7. -f/Format Parameter
+1. {} Beautification
+2. Replacing variables inside strings (testing)
+3. Replacing functions inside strings safely (testing)
+4. Base64encode/decode
+5. RawInflate/Deflate
+6. -f/Format Parameter
+7. Remove of escapes (When not in quotes)
+8. Fix issue with nested multiline comment bug
+9. Fix nested variable with {}
+10. Fix issue with fails in ;
+
+Use Bracket Balancer for nests.

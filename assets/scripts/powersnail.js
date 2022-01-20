@@ -1,3 +1,8 @@
+function balancer(startParameter, endParameter, Data){
+
+}
+
+
 function powerSnail(){
     //Cleaning outputbox
     document.getElementById("outputbox").value = "";
@@ -20,11 +25,28 @@ function powerSnail(){
         inputData = document.getElementById("inputbox").value;
         inputData = inputData + "\n";
 
-        //Removal of Comments
+        //Removal of MultiLine Comments
         re = new RegExp(/<#[\s\S]*?#>/g);
         inputData = inputData.replaceAll(re, "");
-        re = new RegExp(/#.*/g);
-        inputData = inputData.replaceAll(re, "");
+
+        //Removal of Single Line Comments
+        var indexes = [];
+        re = new RegExp(/(?:(["'])(?:.)*?\1|[^#])+|#.*/gm);
+        while ((match = re.exec(inputData)) != null) {
+            if(match[0].charAt(0) == "#"){
+                indexes.push(match.index);
+                indexes.push(match[0].length);
+            }
+        }
+
+        for(var x = 0; x < indexes.length;x+=2){
+            var temp = indexes[x]+indexes[x+1]+1;
+            inputData = inputData.slice(0, indexes[x]) + inputData.slice(temp);
+            if((x+2) < indexes.length){
+                indexes[x+2] = indexes[x+2] - indexes[x+1] -1;
+            }
+        }
+
         
         //Removal of Escapes //Work
         re = new RegExp(/`[\s\S]{1}/g);
@@ -236,8 +258,8 @@ function powerSnail(){
 
         //Line Break on ; character
         for(x in inputData){
-            var indexes = [];
-            re = new RegExp(/(?:\\(?:\\\\)*.|(["'])(?:\\(?:\\\\)*.|.)*?\1|[^;])+|;/gm);
+            indexes = [];
+            re = new RegExp(/(?:(["'])(?:.)*?\1|[^;])+|;/gm);
             while ((match = re.exec(inputData[x])) != null) {
                 if(match[0].length == 1){
                     indexes.push(match.index);
