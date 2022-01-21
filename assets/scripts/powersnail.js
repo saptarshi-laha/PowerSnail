@@ -17,21 +17,16 @@ function powerlessSnail(Data){
     var variable = false;
     var semicolon = false;
     var comment = false;
+    var multilinecomment = false;
 
     for(var x = 0; x < Data.length; x++){
 
-        if(Data.charAt(x) == "`"){
-            if(escapes.length == 0 && inquotes == false && comment == false){
-                escapes.push("`");
-                escaped = true;
-            }
-            else{
-                x += 1;
-            }
+        if(Data.charAt(x) == "`" && escapes.length == 0 && inquotes == false && comment == false && multilinecomment == false){
+            escapes.push("`");
+            escaped = true;
         }
-        else if(Data.charAt(x) == "\"" && escaped == false && comment == false){
+        else if(Data.charAt(x) == "\"" && variable == false && escaped == false && comment == false && multilinecomment == false){
             if((stack.length-1) >=0 && stack[stack.length - 1] == "\""){
-                if(escaped == false){
                     stack.pop();
                     if(stack.includes("\"") || stack.includes("\'")){
                         inquotes = true;
@@ -39,10 +34,8 @@ function powerlessSnail(Data){
                     else{
                         inquotes = false;
                     }
-                }
             }
             else if((stack.length-1) >=0 && stack[stack.length - 1] != "\""){
-                if(escaped == false){
                     stack.push("\"");
                     if(stack.includes("\"") || stack.includes("\'")){
                         inquotes = true;
@@ -50,18 +43,14 @@ function powerlessSnail(Data){
                     else{
                         inquotes = false;
                     }
-                }
             }
             else if((stack.length-1) < 0){
-                if(escaped == false){
                     stack.push("\"");
                     inquotes = true;
-                }
             }
         }
-        else if(Data.charAt(x) == "\'" && escaped == false && variable == false && comment == false){
+        else if(Data.charAt(x) == "\'" && escaped == false && variable == false && comment == false && multilinecomment == false){
             if((stack.length-1) >=0 && stack[stack.length - 1] == "\'"){
-                if(escaped == false){
                     stack.pop();
                     if(stack.includes("\"") || stack.includes("\'")){
                         inquotes = true;
@@ -69,10 +58,8 @@ function powerlessSnail(Data){
                     else{
                         inquotes = false;
                     }
-                }
             }
             else if((stack.length-1) >=0 && stack[stack.length - 1] != "\'"){
-                if(escaped == false){
                     stack.push("\'");
                     if(stack.includes("\"") || stack.includes("\'")){
                         inquotes = true;
@@ -80,7 +67,6 @@ function powerlessSnail(Data){
                     else{
                         inquotes = false;
                     }
-                }
             }
             else if((stack.length-1) < 0){
                 if(escaped == false){
@@ -89,10 +75,10 @@ function powerlessSnail(Data){
                 }
             }
         }
-        else if(Data.charAt(x) == "$" && escaped == false && variable == false && inquotes == false && comment == false && Data.charAt(x+1) == "{"){
+        else if(Data.charAt(x) == "$" && escaped == false && variable == false && inquotes == false && comment == false && Data.charAt(x+1) == "{" && multilinecomment == false){
                 variable = true;
         }
-        else if(Data.charAt(x) == "{" && escaped == false && inquotes == false && variable == true && comment == false){
+        else if(Data.charAt(x) == "{" && escaped == false && inquotes == false && variable == true && comment == false && multilinecomment == false){
             stack.push("{");
             if(stack.includes("{")){
                 variable = true;
@@ -101,7 +87,7 @@ function powerlessSnail(Data){
                 variable = false;
             }
         }
-        else if(Data.charAt(x) == "}" && escaped == false && inquotes == false && variable == true && comment == false){
+        else if(Data.charAt(x) == "}" && escaped == false && inquotes == false && variable == true && comment == false && multilinecomment == false){
             if(stack[stack.length -1] == "{"){
             stack.pop();    
             }            
@@ -112,36 +98,54 @@ function powerlessSnail(Data){
                 variable = false;
             }
         }
-        else if(Data.charAt(x) == ";"){
-            if(escaped == false && inquotes == false && variable == false && comment == false){
-                semicolon = true;
-            }
+        else if(Data.charAt(x) == ";" && escaped == false && inquotes == false && variable == false && comment == false && multilinecomment == false){
+            semicolon = true;
         }
-        else if(Data.charAt(x) == "#" && escaped == false && inquotes == false && variable == false){
+        else if(Data.charAt(x) == "#" && escaped == false && inquotes == false && variable == false && multilinecomment == false && comment == false){
             comment = true;
         }
+        else if(Data.charAt(x) == "<" && Data.charAt(x+1) == "#" && escaped == false && inquotes == false && variable == false && comment == false && multilinecomment == false){
+            multilinecomment = true;
+        }
 
-        if(escaped == true && inquotes == false && comment == false){
+
+        if(escaped == true && inquotes == false && comment == false && multilinecomment == false){
             Data = Data.slice(0, x) + Data.slice(x+2);
             x -= 1;
             escapes.pop();
             escaped = false;
         }
 
-        if(semicolon == true && variable == false && inquotes == false && comment == false){
+        if(semicolon == true && variable == false && inquotes == false && comment == false && multilinecomment == false){
             Data = Data.slice(0, x+1) + "\n" + Data.slice(x+1);
             x += 1;
             semicolon = false;
         }
 
-        if(comment == true && variable == false && inquotes == false && escaped == false){
+        if(comment == true && variable == false && inquotes == false && escaped == false && multilinecomment == false){
             var y = x;
-            while(Data.charAt(x) != "\n" && x < Data.length){
+            while(Data.charAt(x) != "\n"){
                 x++;
             }
             Data = Data.slice(0,y) + Data.slice(x+1);
             x = y - 1;
             comment = false;
+        }
+
+        if(multilinecomment == true && variable == false && inquotes == false && escaped == false && comment == false){
+            x = x + 2
+            var y = x - 2;
+            while(true){
+                if((Data.charAt(x) == "#" && Data.charAt(x+1) == ">") || x >= Data.length){
+                    break;
+                }
+                else{
+                x++;
+                }
+            }
+                Data = Data.slice(0,y) + Data.slice(x+2);
+                x = y - 1;
+                multilinecomment = false;
         }
 
         if(x == (Data.length - 1) && stack.length > 0){
@@ -155,6 +159,7 @@ function powerlessSnail(Data){
                 }
             }
         }
+
     }
 
     return Data;

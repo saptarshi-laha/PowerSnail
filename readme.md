@@ -5,5 +5,4 @@ Working on the following now -
 4. Base64encode/decode
 5. RawInflate/Deflate
 6. -f/Format Parameter
-7. Fix issue with nested multiline comment bug
-8. Redo the remaining parts
+7. Redo the remaining parts
