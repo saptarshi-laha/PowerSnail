@@ -5,8 +5,5 @@ Working on the following now -
 4. Base64encode/decode
 5. RawInflate/Deflate
 6. -f/Format Parameter
-7. Remove of escapes (When not in quotes)
-8. Fix issue with nested multiline comment bug
-9. Fix nested variable with {}
-
-Use Bracket Balancer for nests.
+7. Fix issue with nested multiline comment bug
+8. Redo the remaining parts

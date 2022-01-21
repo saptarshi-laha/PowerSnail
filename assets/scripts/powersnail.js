@@ -1,4 +1,154 @@
-function balancer(startParameter, endParameter, Data){
+//Function Removes Escapes and Distributes Data Based on Semicolon
+function removeEscapesAndBalanceSemicolons(Data){
+
+    var escapes = [];
+    var stack = [];
+
+    var escaped = false;
+    var inquotes = false;
+    var variable = false;
+    var semicolon = false;
+
+    for(var x = 0; x < Data.length; x++){
+
+        if(Data.charAt(x) == "`"){
+            if(escapes.length == 0 && inquotes == false){
+                escapes.push("`");
+                escaped = true;
+            }
+            else{
+                x += 1;
+            }
+        }
+        else if(Data.charAt(x) == "\"" && escaped == false){
+            if((stack.length-1) >=0 && stack[stack.length - 1] == "\""){
+                if(escaped == false){
+                    stack.pop();
+                    if(stack.includes("\"") || stack.includes("\'")){
+                        inquotes = true;
+                    }
+                    else{
+                        inquotes = false;
+                    }
+                }
+            }
+            else if((stack.length-1) >=0 && stack[stack.length - 1] != "\""){
+                if(escaped == false){
+                    stack.push("\"");
+                    if(stack.includes("\"") || stack.includes("\'")){
+                        inquotes = true;
+                    }
+                    else{
+                        inquotes = false;
+                    }
+                }
+            }
+            else if((stack.length-1) < 0){
+                if(escaped == false){
+                    stack.push("\"");
+                    inquotes = true;
+                }
+            }
+        }
+        else if(Data.charAt(x) == "\'" && escaped == false && variable == false){
+            if((stack.length-1) >=0 && stack[stack.length - 1] == "\'"){
+                if(escaped == false){
+                    stack.pop();
+                    if(stack.includes("\"") || stack.includes("\'")){
+                        inquotes = true;
+                    }
+                    else{
+                        inquotes = false;
+                    }
+                }
+            }
+            else if((stack.length-1) >=0 && stack[stack.length - 1] != "\'"){
+                if(escaped == false){
+                    stack.push("\'");
+                    if(stack.includes("\"") || stack.includes("\'")){
+                        inquotes = true;
+                    }
+                    else{
+                        inquotes = false;
+                    }
+                }
+            }
+            else if((stack.length-1) < 0){
+                if(escaped == false){
+                    stack.push("\'");
+                    inquotes = true;
+                }
+            }
+        }
+        else if(Data.charAt(x) == "$" && escaped == false && variable == false && inquotes == false && (x+1)<Data.length && Data.charAt(x+1) == "{"){
+                variable = true;
+        }
+        else if(Data.charAt(x) == "{" && escaped == false && inquotes == false && variable == true){
+            stack.push("{");
+            if(stack.includes("{")){
+                variable = true;
+            }
+            else{
+                variable = false;
+            }
+        }
+        else if(Data.charAt(x) == "}" && escaped == false && inquotes == false && variable == true){
+            if(stack[stack.length -1] == "{"){
+            stack.pop();    
+            }            
+            if(stack.includes("{")){
+                variable = true;
+            }
+            else{
+                variable = false;
+            }
+        }
+        else if(Data.charAt(x) == ";"){
+            if(escaped == false && inquotes == false && variable == false){
+                semicolon = true;
+            }
+        }
+
+        if(escaped == true && inquotes == false){
+            if(Data.length>(x+2)){
+                Data = Data.slice(0, x) + Data.slice(x+2);
+                x -= 1;
+            }
+            else{
+                Data = Data.slice(0, x-1);
+                x -= 1;
+            }
+            escapes.pop();
+            escaped = false;
+        }
+
+        if(semicolon == true && variable == false && inquotes == false){
+            if((x+1)<Data.length){
+                Data = Data.slice(0, x+1) + "\n" + Data.slice(x+1);
+                x += 1;
+                semicolon = false;
+            }
+            else{
+                Data = Data.slice(0, x) + "\n" + Data.slice(x);
+                x += 1;
+                semicolon = false;
+            }
+        }
+
+        if(x == (Data.length - 1) && stack.length > 0){
+            for(y in stack){
+                Data = Data.slice(0,Data.length-1);
+                if(stack[y] == "{"){
+                    Data = Data + "}";
+                }
+                else{
+                    Data = Data + stack[stack.length-1-y];
+                }
+            }
+        }
+    }
+
+    return Data;
 
 }
 
@@ -24,6 +174,12 @@ function powerSnail(){
     if(document.getElementById("inputbox").value != ""){
         inputData = document.getElementById("inputbox").value;
         inputData = inputData + "\n";
+
+
+        inputData = removeEscapesAndBalanceSemicolons(inputData);
+        console.log(inputData);
+
+        return;
 
         //Removal of MultiLine Comments
         re = new RegExp(/<#[\s\S]*?#>/g);
