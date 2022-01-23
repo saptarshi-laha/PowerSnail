@@ -6,79 +6,59 @@ function powerlessSnail(Data){
     const LC_preferenceVars = preferenceVars.map(name => name.toLowerCase());
     const scopeVars = ["$env:", "$global:", "$local:", "$private:", "$script:", "$using:", "$workflow:", "$alias:", "$function:", "$variable:"];
     const LC_scopeVars = scopeVars.map(name => name.toLowerCase());
-    const aliases = ["\\?","Where-Object","%","ForEach-Object","cd","Set-Location","chdir","Set-Location","clc","Clear-Content","clear","Clear-Host","clhy","Clear-History","cli","Clear-Item","clp","Clear-ItemProperty","cls","Clear-Host","clv","Clear-Variable","cnsn","Connect-PSSession","copy","Copy-Item","cpi","Copy-Item","cvpa","Convert-Path","dbp","Disable-PSBreakpoint","del","Remove-Item","dir","Get-ChildItem","dnsn","Disconnect-PSSession","ebp","Enable-PSBreakpoint","echo","Write-Output","epal","Export-Alias","epcsv","Export-Csv","erase","Remove-Item","etsn","Enter-PSSession","exsn","Exit-PSSession","fc","Format-Custom","fhx","Format-Hex","fl","Format-List","foreach","ForEach-Object","ft","Format-Table","fw","Format-Wide","gal","Get-Alias","gbp","Get-PSBreakpoint","gc","Get-Content","gci","Get-ChildItem","gcm","Get-Command","gcs","Get-PSCallStack","gdr","Get-PSDrive","ghy","Get-History","gi","Get-Item","gjb","Get-Job","gl","Get-Location","gm","Get-Member","gmo","Get-Module","gp","Get-ItemProperty","gps","Get-Process","gpv","Get-ItemPropertyValue","group","Group-Object","gsn","Get-PSSession","gtz","Get-TimeZone","gu","Get-Unique","gv","Get-Variable","h","Get-History","history","Get-History","icm","Invoke-Command","iex","Invoke-Expression","ihy","Invoke-History","ii","Invoke-Item","ipal","Import-Alias","ipcsv","Import-Csv","ipmo","Import-Module","irm","Invoke-RestMethod","iwr","Invoke-WebRequest","kill","Stop-Process","md","mkdir","measure","Measure-Object","mi","Move-Item","move","Move-Item","mp","Move-ItemProperty","nal","New-Alias","ndr","New-PSDrive","ni","New-Item","nmo","New-Module","nsn","New-PSSession","nv","New-Variable","oh","Out-Host","popd","Pop-Location","pushd","Push-Location","pwd","Get-Location","r","Invoke-History","rbp","Remove-PSBreakpoint","rcjb","Receive-Job","rcsn","Receive-PSSession","rd","Remove-Item","rdr","Remove-PSDrive","ren","Rename-Item","ri","Remove-Item","rjb","Remove-Job","rmo","Remove-Module","rni","Rename-Item","rnp","Rename-ItemProperty","rp","Remove-ItemProperty","rsn","Remove-PSSession","rv","Remove-Variable","rvpa","Resolve-Path","sajb","Start-Job","sal","Set-Alias","saps","Start-Process","sbp","Set-PSBreakpoint","sc","Set-Content","select","Select-Object","set","Set-Variable","si","Set-Item","sl","Set-Location","sls","Select-String","sp","Set-ItemProperty","spjb","Stop-Job","spps","Stop-Process","sv","Set-Variable","type","Get-Content","where","Where-Object","wjb","Wait-Job"];
+    const aliases = ["?","Where-Object","%","ForEach-Object","cd","Set-Location","chdir","Set-Location","clc","Clear-Content","clear","Clear-Host","clhy","Clear-History","cli","Clear-Item","clp","Clear-ItemProperty","cls","Clear-Host","clv","Clear-Variable","cnsn","Connect-PSSession","copy","Copy-Item","cpi","Copy-Item","cvpa","Convert-Path","dbp","Disable-PSBreakpoint","del","Remove-Item","dir","Get-ChildItem","dnsn","Disconnect-PSSession","ebp","Enable-PSBreakpoint","echo","Write-Output","epal","Export-Alias","epcsv","Export-Csv","erase","Remove-Item","etsn","Enter-PSSession","exsn","Exit-PSSession","fc","Format-Custom","fhx","Format-Hex","fl","Format-List","foreach","ForEach-Object","ft","Format-Table","fw","Format-Wide","gal","Get-Alias","gbp","Get-PSBreakpoint","gc","Get-Content","gci","Get-ChildItem","gcm","Get-Command","gcs","Get-PSCallStack","gdr","Get-PSDrive","ghy","Get-History","gi","Get-Item","gjb","Get-Job","gl","Get-Location","gm","Get-Member","gmo","Get-Module","gp","Get-ItemProperty","gps","Get-Process","gpv","Get-ItemPropertyValue","group","Group-Object","gsn","Get-PSSession","gtz","Get-TimeZone","gu","Get-Unique","gv","Get-Variable","h","Get-History","history","Get-History","icm","Invoke-Command","iex","Invoke-Expression","ihy","Invoke-History","ii","Invoke-Item","ipal","Import-Alias","ipcsv","Import-Csv","ipmo","Import-Module","irm","Invoke-RestMethod","iwr","Invoke-WebRequest","kill","Stop-Process","md","mkdir","measure","Measure-Object","mi","Move-Item","move","Move-Item","mp","Move-ItemProperty","nal","New-Alias","ndr","New-PSDrive","ni","New-Item","nmo","New-Module","nsn","New-PSSession","nv","New-Variable","oh","Out-Host","popd","Pop-Location","pushd","Push-Location","pwd","Get-Location","r","Invoke-History","rbp","Remove-PSBreakpoint","rcjb","Receive-Job","rcsn","Receive-PSSession","rd","Remove-Item","rdr","Remove-PSDrive","ren","Rename-Item","ri","Remove-Item","rjb","Remove-Job","rmo","Remove-Module","rni","Rename-Item","rnp","Rename-ItemProperty","rp","Remove-ItemProperty","rsn","Remove-PSSession","rv","Remove-Variable","rvpa","Resolve-Path","sajb","Start-Job","sal","Set-Alias","saps","Start-Process","sbp","Set-PSBreakpoint","sc","Set-Content","select","Select-Object","set","Set-Variable","si","Set-Item","sl","Set-Location","sls","Select-String","sp","Set-ItemProperty","spjb","Stop-Job","spps","Stop-Process","sv","Set-Variable","type","Get-Content","where","Where-Object","wjb","Wait-Job"];
     const LC_aliases = aliases.map(name => name.toLowerCase());
 
     var escapes = [];
     var stack = [];
 
     var escaped = false;
-    var inquotes = false;
+    var inquotes1 = false;
+    var inquotes2 = false;
     var variable = false;
     var semicolon = false;
     var comment = false;
     var multilinecomment = false;
+    var athere = false;
 
     for(var x = 0; x < Data.length; x++){
 
-        if(Data.charAt(x) == "`" && escapes.length == 0 && inquotes == false && comment == false && multilinecomment == false){
+        if(Data.charAt(x) == "`" && escapes.length == 0 && inquotes1 == false && inquotes2 == false && comment == false && multilinecomment == false && athere == false){
             escapes.push("`");
             escaped = true;
         }
-        else if(Data.charAt(x) == "\"" && variable == false && escaped == false && comment == false && multilinecomment == false){
-            if((stack.length-1) >=0 && stack[stack.length - 1] == "\""){
+        else if(Data.charAt(x) == "\"" && inquotes2 == false && variable == false && escaped == false && comment == false && multilinecomment == false && athere == false){
+            if((stack.length-1) >=0 && stack[stack.length - 1] == "\"" && Data.charAt(x-1) != "@" && Data.charAt(x+1) != "@"){
                     stack.pop();
-                    if(stack.includes("\"") || stack.includes("\'")){
-                        inquotes = true;
-                    }
-                    else{
-                        inquotes = false;
-                    }
+                    inquotes1 = false;
             }
             else if((stack.length-1) >=0 && stack[stack.length - 1] != "\""){
                     stack.push("\"");
-                    if(stack.includes("\"") || stack.includes("\'")){
-                        inquotes = true;
-                    }
-                    else{
-                        inquotes = false;
-                    }
+                    inquotes1 = true;
             }
             else if((stack.length-1) < 0){
                     stack.push("\"");
-                    inquotes = true;
+                    inquotes1 = true;
             }
         }
-        else if(Data.charAt(x) == "\'" && escaped == false && variable == false && comment == false && multilinecomment == false){
-            if((stack.length-1) >=0 && stack[stack.length - 1] == "\'"){
+        else if(Data.charAt(x) == "\'" && inquotes1 == false && variable == false && escaped == false && comment == false && multilinecomment == false && athere == false){
+            if((stack.length-1) >=0 && stack[stack.length - 1] == "\'" && Data.charAt(x-1) != "@" && Data.charAt(x+1) != "@"){
                     stack.pop();
-                    if(stack.includes("\"") || stack.includes("\'")){
-                        inquotes = true;
-                    }
-                    else{
-                        inquotes = false;
-                    }
+                    inquotes2 = false;
             }
             else if((stack.length-1) >=0 && stack[stack.length - 1] != "\'"){
                     stack.push("\'");
-                    if(stack.includes("\"") || stack.includes("\'")){
-                        inquotes = true;
-                    }
-                    else{
-                        inquotes = false;
-                    }
+                    inquotes2 = true;
             }
             else if((stack.length-1) < 0){
-                if(escaped == false){
                     stack.push("\'");
-                    inquotes = true;
-                }
+                    inquotes2 = true;
             }
         }
-        else if(Data.charAt(x) == "$" && escaped == false && variable == false && inquotes == false && comment == false && Data.charAt(x+1) == "{" && multilinecomment == false){
+        else if(Data.charAt(x) == "$" && escaped == false && variable == false && inquotes1 == false && inquotes2 == false && comment == false && Data.charAt(x+1) == "{" && multilinecomment == false && athere == false){
                 variable = true;
         }
-        else if(Data.charAt(x) == "{" && escaped == false && inquotes == false && variable == true && comment == false && multilinecomment == false){
+        else if(Data.charAt(x) == "{" && escaped == false && inquotes1 == false && inquotes2 == false && variable == true && comment == false && multilinecomment == false && athere == false){
             stack.push("{");
             if(stack.includes("{")){
                 variable = true;
@@ -87,7 +67,7 @@ function powerlessSnail(Data){
                 variable = false;
             }
         }
-        else if(Data.charAt(x) == "}" && escaped == false && inquotes == false && variable == true && comment == false && multilinecomment == false){
+        else if(Data.charAt(x) == "}" && escaped == false && inquotes1 == false && inquotes2 == false && variable == true && comment == false && multilinecomment == false && athere == false){
             if(stack[stack.length -1] == "{"){
             stack.pop();    
             }            
@@ -98,31 +78,65 @@ function powerlessSnail(Data){
                 variable = false;
             }
         }
-        else if(Data.charAt(x) == ";" && escaped == false && inquotes == false && variable == false && comment == false && multilinecomment == false){
+        else if(Data.charAt(x) == ";" && escaped == false && inquotes1 == false && inquotes2 == false && variable == false && comment == false && multilinecomment == false && athere == false){
             semicolon = true;
         }
-        else if(Data.charAt(x) == "#" && escaped == false && inquotes == false && variable == false && multilinecomment == false && comment == false){
+        else if(Data.charAt(x) == "#" && escaped == false && inquotes1 == false && inquotes2 == false && variable == false && multilinecomment == false && comment == false && athere == false){
             comment = true;
         }
-        else if(Data.charAt(x) == "<" && Data.charAt(x+1) == "#" && escaped == false && inquotes == false && variable == false && comment == false && multilinecomment == false){
+        else if(Data.charAt(x) == "<" && Data.charAt(x+1) == "#" && escaped == false && inquotes1 == false && inquotes2 == false && variable == false && comment == false && multilinecomment == false && athere == false){
             multilinecomment = true;
+        }
+        else if(Data.charAt(x) == "@" && Data.charAt(x+1) == "\"" && variable == false && escaped == false && comment == false && multilinecomment == false && athere == false && inquotes1 == false && inquotes2 == false){
+                    stack.push("@\"");
+                    x = x + 1;
+                    athere = true;
+        }
+        else if(Data.charAt(x) == "\"" && Data.charAt(x+1) == "@" && variable == false && escaped == false && comment == false && multilinecomment == false && athere == true && inquotes1 == false && inquotes2 == false){
+                    if(stack[stack.length - 1] == "@\""){
+                        stack.pop();
+                        x = x + 1;
+                        if(stack.includes("@\"") || stack.includes("@\'")){
+                            athere = true;
+                        }
+                        else{
+                            athere = false;
+                        }
+                    }
+        }
+        else if(Data.charAt(x) == "@" && Data.charAt(x+1) == "\'" && variable == false && escaped == false && comment == false && multilinecomment == false && athere == false && inquotes1 == false && inquotes2 == false){
+                    stack.push("@\'");
+                    x = x + 1;
+                    athere = true;
+        }
+        else if(Data.charAt(x) == "\'" && Data.charAt(x+1) == "@" && variable == false && escaped == false && comment == false && multilinecomment == false && athere == true && inquotes1 == false && inquotes2 == false){
+                    if(stack[stack.length - 1] == "@\'"){
+                        stack.pop();
+                        x = x + 1;
+                        if(stack.includes("@\"") || stack.includes("@\'")){
+                            athere = true;
+                        }
+                        else{
+                            athere = false;
+                        }
+                    }
         }
 
 
-        if(escaped == true && inquotes == false && comment == false && multilinecomment == false){
+        if(escaped == true && inquotes1 == false && inquotes2 == false && comment == false && multilinecomment == false && athere == false){
             Data = Data.slice(0, x) + Data.slice(x+2);
             x -= 1;
             escapes.pop();
             escaped = false;
         }
 
-        if(semicolon == true && variable == false && inquotes == false && comment == false && multilinecomment == false){
+        if(semicolon == true && variable == false && inquotes1 == false && inquotes2 == false && comment == false && multilinecomment == false && athere == false){
             Data = Data.slice(0, x+1) + "\n" + Data.slice(x+1);
             x += 1;
             semicolon = false;
         }
 
-        if(comment == true && variable == false && inquotes == false && escaped == false && multilinecomment == false){
+        if(comment == true && variable == false && inquotes1 == false && inquotes2 == false && escaped == false && multilinecomment == false && athere == false){
             var y = x;
             while(Data.charAt(x) != "\n"){
                 x++;
@@ -132,7 +146,7 @@ function powerlessSnail(Data){
             comment = false;
         }
 
-        if(multilinecomment == true && variable == false && inquotes == false && escaped == false && comment == false){
+        if(multilinecomment == true && variable == false && inquotes1 == false && inquotes2 == false && escaped == false && comment == false && athere == false){
             x = x + 2
             var y = x - 2;
             while(true){
@@ -147,19 +161,32 @@ function powerlessSnail(Data){
                 x = y - 1;
                 multilinecomment = false;
         }
-
+        
+        var balance = "";
+        
         if(x == (Data.length - 1) && stack.length > 0){
             for(y in stack){
-                Data = Data.slice(0,Data.length-1);
                 if(stack[y] == "{"){
-                    Data = Data + "}";
+                    balance = balance + "}";
+                }
+                else if(stack[y] == "@\""){
+                    balance = balance + "\"@";
+                    console.log(x);
+                }
+                else if(stack[y] == "@\'"){
+                    balance = balance + "\'@";
                 }
                 else{
-                    Data = Data + stack[stack.length-1-y];
+                    balance = balance + stack[stack.length-1-y];
                 }
             }
         }
 
+    }
+
+    if(balance != ""){
+    Data = Data.slice(0, Data.length - 1);
+    Data = Data + balance;
     }
 
     return Data;
